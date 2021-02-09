@@ -14,11 +14,14 @@ class ListFragment : Fragment() {
 
     lateinit var binding: FragmentListBinding
 
-    val viewModel: ListView by viewModels()
+    val viewModel: ListViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         binding = FragmentListBinding.inflate(inflater, container, false)
+        viewModel.response.observe(viewLifecycleOwner, {response ->
+            
+        })
         return binding.root
     }
 }
