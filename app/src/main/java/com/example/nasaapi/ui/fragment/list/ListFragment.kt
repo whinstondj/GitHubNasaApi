@@ -1,6 +1,7 @@
 package com.example.nasaapi.ui.fragment.list
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,8 +21,11 @@ class ListFragment : Fragment() {
 
         binding = FragmentListBinding.inflate(inflater, container, false)
         viewModel.response.observe(viewLifecycleOwner, {response ->
-            
+                Log.e("Ejemplo", response.toString())
         })
+
+        viewModel.requestInformation()
+
         return binding.root
     }
 }
