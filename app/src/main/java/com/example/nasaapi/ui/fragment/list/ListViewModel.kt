@@ -1,10 +1,10 @@
 package com.example.nasaapi.ui.fragment.list
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.app.Application
+import androidx.lifecycle.*
 import com.example.nasaapi.base.BaseState
+import com.example.nasaapi.base.NetworkManager
+import com.example.nasaapi.base.noInternetConnectivity
 import com.example.nasaapi.data.NasaRepository
 import com.example.nasaapi.data.model.Item
 import kotlinx.coroutines.Dispatchers
@@ -13,25 +13,31 @@ import retrofit2.HttpException
 import java.lang.Exception
 import java.net.UnknownHostException
 
-class ListViewModel: ViewModel() {
+class ListViewModel (app: Application): AndroidViewModel(app) {
 
     private val state = MutableLiveData<BaseState>()
     fun getState(): LiveData<BaseState> = state
 
 
     fun requestInformation() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                state.postValue(BaseState.Loading())
-                val items = NasaRepository().requestNasaPictures("sun")
-                state.postValue(BaseState.Normal(ListState(items)))
-            } catch(e:Exception) {
-                state.postValue(BaseState.Error(e))
+        val hasInternetConnection: Boolean = NetworkManager().isNetworkAvailable(getApplication())
+        if (hasInternetConnection) {
+            viewModelScope.launch(Dispatchers.IO) {
+                try {
+                    state.postValue(BaseState.Loading())
+                    val items = NasaRepository().requestNasaPictures("sun")
+                    state.postValue(BaseState.Normal(ListState(items)))
+                } catch (e: Exception) {
+                    state.postValue(BaseState.Error(e))
+                }
             }
+        } else {
+            state.postValue(BaseState.Error(noInternetConnectivity()))
         }
     }
 
 }
+
 
 /**
 when (e){
