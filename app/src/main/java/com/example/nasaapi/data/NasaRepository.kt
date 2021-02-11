@@ -5,7 +5,7 @@ import com.example.nasaapi.data.network.NasaNetwork
 
 class NasaRepository {
 
-    fun requestNasaPictures(pictureType : String): List <Item> {
+    suspend fun requestNasaPictures(pictureType : String): List <Item> {
         return NasaNetwork().requestNasaImages(pictureType).collection.items
     }
 

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.nasaapi.R
 import com.example.nasaapi.databinding.FragmentListBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class ListFragment : Fragment() {
 
@@ -27,15 +28,39 @@ class ListFragment : Fragment() {
 
         adapter = NasaListAdapter(listOf(), requireActivity())
 
+        //Set Recycler View
         binding.fragmentListRecyclerView.apply {
             adapter = this@ListFragment.adapter
             layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
             itemAnimator = DefaultItemAnimator()
         }
 
-        viewModel.response.observe(viewLifecycleOwner, {response ->
+        //Set swipe refresh gesture
+        binding.fragmentListSwipeRefreshLayout.setOnRefreshListener {
+            adapter.updateList(listOf())
+            viewModel.requestInformation()
+        }
+
+        // Observers
+        viewModel.getResponse().observe(viewLifecycleOwner, {response ->
+            binding.fragmentListSwipeRefreshLayout.isRefreshing = false
                 adapter.updateList(response)
         })
+
+        viewModel.getError().observe(viewLifecycleOwner, {error ->
+            adapter.updateList(listOf())
+            MaterialAlertDialogBuilder(requireActivity())
+                    .setTitle("Error")
+                    .setMessage(error)
+                    .setPositiveButton("Retry") { dialog, which ->
+                        viewModel.requestInformation()
+                    }
+                    .show()
+        })
+        viewModel.isLoading().observe(viewLifecycleOwner, { loading ->
+            binding.fragmentListProgressBar.visibility = if (loading) View.VISIBLE else View.GONE
+        })
+
 
         viewModel.requestInformation()
 
