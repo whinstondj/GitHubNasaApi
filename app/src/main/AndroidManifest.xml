@@ -24,4 +24,10 @@
             android:resource="@array/preloaded_fonts" />
     </application>
 
+    <queries>
+        <intent>
+        <action android:name="android.intent.action.WEB_SEARCH" />
+        </intent>
+    </queries>
+
 </manifest>
