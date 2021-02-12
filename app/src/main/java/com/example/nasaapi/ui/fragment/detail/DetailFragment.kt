@@ -16,9 +16,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.nasaapi.R
+import com.example.nasaapi.base.toMyDateFormat
 import com.example.nasaapi.data.model.Item
 import com.example.nasaapi.databinding.FragmentDetailBinding
 import com.example.nasaapi.ui.fragment.list.DetailKeywordAdapter
+import java.lang.Exception
+import java.text.SimpleDateFormat
+import java.util.*
 
 class DetailFragment : Fragment() {
     lateinit var binding: FragmentDetailBinding
@@ -40,7 +44,7 @@ class DetailFragment : Fragment() {
 
     private fun setupView(item: Item) {
         binding.fragmentDetailtextViewTitle.text = item.data.firstOrNull()?.title ?: ""
-        binding.fragmentDetailtextViewDate.text = item.data.firstOrNull()?.date_created ?: "Fecha Desconocida"
+        binding.fragmentDetailtextViewDate.text = item.data.firstOrNull()?.date_created?.toMyDateFormat() ?: "Fecha Desconocida"
 
         Glide
             .with(requireActivity())
@@ -78,3 +82,5 @@ class DetailFragment : Fragment() {
         }
     }
 }
+
+
