@@ -10,7 +10,7 @@ import com.example.nasaapi.R
 import com.example.nasaapi.data.model.Item
 import com.example.nasaapi.databinding.ItemNasaListBinding
 
-class NasaListAdapter(private var dataSet: List<Item>, private val context: Context) : RecyclerView.Adapter<NasaListAdapter.ViewHolder>() {
+class NasaListAdapter(private var dataSet: List<Item>, private val context: Context, private val listener: (item: Item) -> Unit) : RecyclerView.Adapter<NasaListAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: ItemNasaListBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -21,9 +21,8 @@ class NasaListAdapter(private var dataSet: List<Item>, private val context: Cont
 
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+        val item = dataSet[position]
         viewHolder.binding.apply {
-            val item = dataSet[position]
-
             itemNasaListtextView.text = item.data.firstOrNull()?.title ?: "N/A"
             itemTextViewDescription.text = item.data.firstOrNull()?.description_508 ?: "N/A"
 
@@ -33,6 +32,9 @@ class NasaListAdapter(private var dataSet: List<Item>, private val context: Cont
                 .centerCrop()
                 .placeholder(R.drawable.ic_navegador)
                 .into(itemNasaListImageView);
+        }
+        viewHolder.itemView.setOnClickListener {
+            listener.invoke(item)
         }
     }
 
